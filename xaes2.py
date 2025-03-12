@@ -18,7 +18,6 @@ def encrypt(data, password):
     cipher = AES.new(key, AES.MODE_CBC, iv)
     # Se aplica padding para que los datos sean múltiplos del tamaño de bloque (16 bytes)
     encrypted = cipher.encrypt(pad(data, AES.block_size))
-    # Se antepone la cabecera "Salted__" seguida de la sal
     return b"Salted__" + salt + encrypted
 
 # Función para descifrar
@@ -41,7 +40,6 @@ def main():
 
     mode = sys.argv[1]
     password = sys.argv[2]
-    # Lee todos los datos de la entrada estándar (en modo binario)
     data = sys.stdin.buffer.read()
 
     try:
@@ -56,7 +54,6 @@ def main():
         sys.stderr.write("Error: {}\n".format(e))
         sys.exit(1)
 
-    # Escribe los datos resultantes en la salida estándar (modo binario)
     sys.stdout.buffer.write(output)
 
 if __name__ == '__main__':
