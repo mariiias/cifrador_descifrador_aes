@@ -88,13 +88,13 @@ El programa es **totalmente compatible con OpenSSL**, lo que permite cifrar con 
 El programa se ejecuta desde la terminal mediante **stdin** y **stdout**.
 Se puede usar en combinación con otras herramientas de línea de comandos.
 
-### 🔹 Cifrar un archivo
+### Cifrar un archivo
 
 ```bash
 cat archivo_original | ./xaes.py -e "mi contraseña" > archivo_cifrado
 ```
 
-### 🔹 Descifrar un archivo
+### Descifrar un archivo
 
 ```bash
 cat archivo_cifrado | ./xaes.py -d "mi contraseña" > archivo_descifrado
@@ -114,14 +114,14 @@ Si no hay salida, los archivos son idénticos.
 
 Puedes comprobar la interoperabilidad entre este programa y OpenSSL:
 
-### 🔹 Cifrar con OpenSSL y descifrar con `xaes.py`
+### Cifrar con OpenSSL y descifrar con `xaes.py`
 
 ```bash
 cat archivo_original | openssl aes-128-cbc -pbkdf2 -k "mi contraseña" > archivo_cifrado
 cat archivo_cifrado | ./xaes.py -d "mi contraseña" > archivo_descifrado
 ```
 
-### 🔹 Cifrar con `xaes.py` y descifrar con OpenSSL
+### Cifrar con `xaes.py` y descifrar con OpenSSL
 
 ```bash
 cat archivo_original | ./xaes.py -e "mi contraseña" > archivo_cifrado
