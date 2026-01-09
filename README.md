@@ -1,55 +1,50 @@
+# OpenSSL-Compatible Encryptor/Decryptor
 
-# Cifrador/Descifrador Compatible con OpenSSL
+> [Leer en Español](README.es.md) 🇪🇸
 
-
-**Sistema probado:** Ubuntu 20.04 LTS
-
----
-
-## Descripción del proyecto
-
-Este proyecto implementa un **cifrador y descifrador de archivos** utilizando el algoritmo **AES-128 en modo CBC (Cipher Block Chaining)**.
-Permite cifrar y descifrar archivos de manera segura usando una contraseña proporcionada por el usuario, derivando la clave de cifrado mediante **PBKDF2 con HMAC-SHA256**, garantizando así una alta seguridad.
-
-El programa es **totalmente compatible con OpenSSL**, lo que permite cifrar con OpenSSL y descifrar con este software, y viceversa.
+**System Tested:** Ubuntu 20.04 LTS
 
 ---
 
-## Requisitos previos
+## Project Description
+
+This project implements a **file encryptor and decryptor** using the **AES-128 algorithm in CBC (Cipher Block Chaining) mode**. It allows for secure file encryption and decryption using a user-provided password. The encryption key is derived using **PBKDF2 with HMAC-SHA256**, ensuring high security.
+
+The program is **fully compatible with OpenSSL**, meaning you can encrypt files using OpenSSL and decrypt them with this software, and vice versa.
+
+---
+
+## Prerequisites
 
 * **Python 3.10**
-* **Módulo `venv`** para crear entornos virtuales
-* Archivos necesarios:
-
+* **`venv` module** for creating virtual environments
+* Required files:
   * `xaes.py`
   * `install.sh`
   * `requirements.txt`
 
 ---
 
-## Instalación
+## Installation
 
-### Instalación automática (recomendada)
+### Automatic Installation (Recommended)
 
-1. Descomprime el proyecto en una carpeta.
-
-2. Abre una terminal y navega a dicha carpeta.
-
-3. Ejecuta los siguientes comandos:
+1. Extract the project into a folder.
+2. Open a terminal and navigate to that folder.
+3. Run the following commands:
 
    ```bash
    chmod +x install.sh
    ./install.sh
    ```
 
-   El script realizará automáticamente:
+   The script will automatically perform:
+   * Verification of Python 3.10 and pip.
+   * Creation and activation of the `venv` virtual environment.
+   * Installation of dependencies (`pycryptodome`).
+   * Execution permission assignment for `xaes.py`.
 
-   * Verificación de Python 3.10 y pip
-   * Creación y activación del entorno virtual `venv`
-   * Instalación de dependencias (`pycryptodome`)
-   * Asignación de permisos de ejecución a `xaes.py`
-
-4. Activa el entorno virtual:
+4. Activate the virtual environment:
 
    ```bash
    source venv/bin/activate
@@ -57,25 +52,24 @@ El programa es **totalmente compatible con OpenSSL**, lo que permite cifrar con 
 
 ---
 
-### Instalación manual
+### Manual Installation
 
-1. Descomprime el proyecto.
-
-2. Crea un entorno virtual:
+1. Extract the project.
+2. Create a virtual environment:
 
    ```bash
    python3 -m venv venv
    source venv/bin/activate
    ```
 
-3. Instala las dependencias:
+3. Install dependencies:
 
    ```bash
    pip install --upgrade pip
    pip install -r requirements.txt
    ```
 
-4. Asigna permisos al script:
+4. Assign execution permissions to the script:
 
    ```bash
    chmod +x xaes.py
@@ -83,91 +77,88 @@ El programa es **totalmente compatible con OpenSSL**, lo que permite cifrar con 
 
 ---
 
-## Uso del programa
+## Usage
 
-El programa se ejecuta desde la terminal mediante **stdin** y **stdout**.
-Se puede usar en combinación con otras herramientas de línea de comandos.
+The program is executed from the terminal via **stdin** and **stdout**. It can be used in combination with other command-line tools.
 
-### Cifrar un archivo
-
-```bash
-cat archivo_original | ./xaes.py -e "mi contraseña" > archivo_cifrado
-```
-
-### Descifrar un archivo
+### Encrypt a File
 
 ```bash
-cat archivo_cifrado | ./xaes.py -d "mi contraseña" > archivo_descifrado
+cat original_file | ./xaes.py -e "my password" > encrypted_file
 ```
 
-Comprobación de integridad:
+### Decrypt a File
 
 ```bash
-diff archivo_original archivo_descifrado
+cat encrypted_file | ./xaes.py -d "my password" > decrypted_file
 ```
 
-Si no hay salida, los archivos son idénticos.
+**Integrity Check:**
+
+```bash
+diff original_file decrypted_file
+```
+
+If there is no output, the files are identical.
 
 ---
 
-## Compatibilidad con OpenSSL
+## OpenSSL Compatibility
 
-Puedes comprobar la interoperabilidad entre este programa y OpenSSL:
+You can verify interoperability between this program and OpenSSL:
 
-### Cifrar con OpenSSL y descifrar con `xaes.py`
+### Encrypt with OpenSSL and Decrypt with `xaes.py`
 
 ```bash
-cat archivo_original | openssl aes-128-cbc -pbkdf2 -k "mi contraseña" > archivo_cifrado
-cat archivo_cifrado | ./xaes.py -d "mi contraseña" > archivo_descifrado
+cat original_file | openssl aes-128-cbc -pbkdf2 -k "my password" > encrypted_file
+cat encrypted_file | ./xaes.py -d "my password" > decrypted_file
 ```
 
-### Cifrar con `xaes.py` y descifrar con OpenSSL
+### Encrypt with `xaes.py` and Decrypt with OpenSSL
 
 ```bash
-cat archivo_original | ./xaes.py -e "mi contraseña" > archivo_cifrado
-cat archivo_cifrado | openssl aes-128-cbc -pbkdf2 -d -k "mi contraseña" > archivo_descifrado
+cat original_file | ./xaes.py -e "my password" > encrypted_file
+cat encrypted_file | openssl aes-128-cbc -pbkdf2 -d -k "my password" > decrypted_file
 ```
 
 ---
 
-## Implementación técnica
+## Technical Implementation
 
-* **Algoritmo:** AES-128-CBC
-* **Derivación de clave:** PBKDF2 con HMAC-SHA256 (10.000 iteraciones)
-* **Formato del archivo cifrado:**
-
+* **Algorithm:** AES-128-CBC
+* **Key Derivation:** PBKDF2 with HMAC-SHA256 (10,000 iterations)
+* **Encrypted File Format:**
   ```
-  Salted__ + <8 bytes de sal> + <datos cifrados>
+  Salted__ + <8-byte salt> + <encrypted data>
   ```
 * **Padding:** PKCS#7
-* **Librerías:** `pycryptodome`, `hashlib`, `os`, `sys`
+* **Libraries:** `pycryptodome`, `hashlib`, `os`, `sys`
 
 ---
 
-## Manejo de errores
+## Error Handling
 
-* Archivo vacío → `ValueError: "El archivo a cifrar está vacío."`
-* Contraseña vacía → `ValueError: "La contraseña no puede estar vacía."`
-* Formato incorrecto → `ValueError: "Formato incorrecto o cabecera no encontrada."`
-* Parámetros incorrectos → Mensaje de uso mostrado en terminal
+* Empty file → `ValueError: "The file to encrypt is empty."`
+* Empty password → `ValueError: "Password cannot be empty."`
+* Incorrect format → `ValueError: "Incorrect format or header not found."`
+* Incorrect parameters → Usage message displayed in the terminal.
 
 ---
 
-## Archivo de prueba
+## Test File
 
-Se incluye un archivo **`archivo_prueba.txt`** con el texto:
+An **`archivo_prueba.txt`** file is included with the following text:
 
 ```
 ¡Hola, mundo!
 ```
 
-### Ejemplo de uso:
+### Usage Example:
 
 ```bash
-cat archivo_prueba.txt | ./xaes.py -e mi_contraseña > archivo_prueba_cifrado
-cat archivo_prueba_cifrado | ./xaes.py -d mi_contraseña > archivo_prueba_descifrado.txt
-diff archivo_prueba.txt archivo_prueba_descifrado.txt
+cat archivo_prueba.txt | ./xaes.py -e my_password > encrypted_test_file
+cat encrypted_test_file | ./xaes.py -d my_password > decrypted_test_file.txt
+diff archivo_prueba.txt decrypted_test_file.txt
 ```
 
-Si no hay salida, el cifrado/descifrado ha sido exitoso 
-
+If there is no output, the encryption/decryption was successful.
